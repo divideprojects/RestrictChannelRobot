@@ -1,0 +1,29 @@
+{
+  "name": "Restrict Channel Robot",
+  "description": "A simple Golang based telegram bot to ban anonymous users in your chat.",
+  "keywords": [
+    "telegram",
+    "telegram-bot",
+    "golang telegram bot",
+    "telegram bot",
+    "golang bot",
+    "golang telegram",
+    "telegram anonymous channel",
+    "telegram group"
+  ],
+  "repository": "https://github.com/DivideProjects/RestrictChannelRobot",
+  "website": "https://t.me/DivideProjects",
+  "success_url": "https://t.me/DivideProjects",
+  "env": {
+    "BOT_TOKEN": {
+      "description": "Bot Token, Get It From @BotFather.",
+      "value": "",
+      "required": true
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/go"
+    }
+  ]
+}
