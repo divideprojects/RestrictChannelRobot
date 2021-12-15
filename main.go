@@ -206,19 +206,27 @@ func restrictChannels(bot *gotgbot.Bot, ctx *ext.Context) error {
 	chat := ctx.EffectiveChat
 	sender := ctx.EffectiveSender
 
-	fmt.Printf("[RestrictChannels] Banning %s (%d) in %s (%d)\n", sender.Name(), sender.Id(), chat.Title, chat.Id)
-
 	_, err := msg.Delete(bot)
 	if err != nil {
+		_, err := msg.Reply(bot, "Failed to delete message: "+err.Error(), nil)
+		if err != nil {
+			fmt.Println("[RestrictChannels] Failed to reply:", err.Error())
+		}
 		fmt.Println("[RestrictChannels] Failed to delete message:", err.Error())
 		return err
 	}
 
 	_, err = chat.BanSenderChat(bot, sender.Id())
 	if err != nil {
+		_, err := msg.Reply(bot, "Failed to ban sender: "+err.Error(), nil)
+		if err != nil {
+			fmt.Println("[RestrictChannels] Failed to reply:", err.Error())
+		}
 		fmt.Println("[RestrictChannels] Failed to ban sender:", err.Error())
 		return err
 	}
+
+	fmt.Printf("[RestrictChannels] Banning %s (%d) in %s (%d)\n", sender.Name(), sender.Id(), chat.Title, chat.Id)
 
 	return ext.ContinueGroups
 }
