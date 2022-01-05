@@ -1,5 +1,5 @@
-# github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.4
-## explicit
+# github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.5
+## explicit; go 1.15
 github.com/PaulSonOfLars/gotgbot/v2
 github.com/PaulSonOfLars/gotgbot/v2/ext
 github.com/PaulSonOfLars/gotgbot/v2/ext/handlers

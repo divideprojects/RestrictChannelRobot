@@ -333,6 +333,8 @@ type CopyMessageOpts struct {
 	CaptionEntities []MessageEntity
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -363,6 +365,7 @@ func (bot *Bot) CopyMessage(chatId int64, fromChatId int64, messageId int64, opt
 			v.Add("caption_entities", string(bs))
 		}
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -708,7 +711,7 @@ type EditMessageCaptionOpts struct {
 // EditMessageCaption Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.
 // - opts (type EditMessageCaptionOpts): All optional parameters.
 // https://core.telegram.org/bots/api#editmessagecaption
-func (bot *Bot) EditMessageCaption(opts *EditMessageCaptionOpts) (*Message, error) {
+func (bot *Bot) EditMessageCaption(opts *EditMessageCaptionOpts) (*Message, bool, error) {
 	v := urlLib.Values{}
 	if opts != nil {
 		if opts.ChatId != 0 {
@@ -723,24 +726,32 @@ func (bot *Bot) EditMessageCaption(opts *EditMessageCaptionOpts) (*Message, erro
 		if opts.CaptionEntities != nil {
 			bs, err := json.Marshal(opts.CaptionEntities)
 			if err != nil {
-				return nil, fmt.Errorf("failed to marshal field caption_entities: %w", err)
+				return nil, false, fmt.Errorf("failed to marshal field caption_entities: %w", err)
 			}
 			v.Add("caption_entities", string(bs))
 		}
 		bs, err := json.Marshal(opts.ReplyMarkup)
 		if err != nil {
-			return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			return nil, false, fmt.Errorf("failed to marshal field reply_markup: %w", err)
 		}
 		v.Add("reply_markup", string(bs))
 	}
 
 	r, err := bot.Get("editMessageCaption", v)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	var m Message
-	return &m, json.Unmarshal(r, &m)
+	if err := json.Unmarshal(r, &m); err != nil {
+		var b bool
+		if err := json.Unmarshal(r, &b); err != nil {
+			return nil, false, err
+		}
+		return nil, b, nil
+	}
+	return &m, true, nil
+
 }
 
 // EditMessageLiveLocationOpts is the set of optional fields for Bot.EditMessageLiveLocation.
@@ -766,7 +777,7 @@ type EditMessageLiveLocationOpts struct {
 // - longitude (type float64): Longitude of new location
 // - opts (type EditMessageLiveLocationOpts): All optional parameters.
 // https://core.telegram.org/bots/api#editmessagelivelocation
-func (bot *Bot) EditMessageLiveLocation(latitude float64, longitude float64, opts *EditMessageLiveLocationOpts) (*Message, error) {
+func (bot *Bot) EditMessageLiveLocation(latitude float64, longitude float64, opts *EditMessageLiveLocationOpts) (*Message, bool, error) {
 	v := urlLib.Values{}
 	v.Add("latitude", strconv.FormatFloat(latitude, 'f', -1, 64))
 	v.Add("longitude", strconv.FormatFloat(longitude, 'f', -1, 64))
@@ -789,18 +800,26 @@ func (bot *Bot) EditMessageLiveLocation(latitude float64, longitude float64, opt
 		}
 		bs, err := json.Marshal(opts.ReplyMarkup)
 		if err != nil {
-			return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			return nil, false, fmt.Errorf("failed to marshal field reply_markup: %w", err)
 		}
 		v.Add("reply_markup", string(bs))
 	}
 
 	r, err := bot.Get("editMessageLiveLocation", v)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	var m Message
-	return &m, json.Unmarshal(r, &m)
+	if err := json.Unmarshal(r, &m); err != nil {
+		var b bool
+		if err := json.Unmarshal(r, &b); err != nil {
+			return nil, false, err
+		}
+		return nil, b, nil
+	}
+	return &m, true, nil
+
 }
 
 // EditMessageMediaOpts is the set of optional fields for Bot.EditMessageMedia.
@@ -819,12 +838,12 @@ type EditMessageMediaOpts struct {
 // - media (type InputMedia): A JSON-serialized object for a new media content of the message
 // - opts (type EditMessageMediaOpts): All optional parameters.
 // https://core.telegram.org/bots/api#editmessagemedia
-func (bot *Bot) EditMessageMedia(media InputMedia, opts *EditMessageMediaOpts) (*Message, error) {
+func (bot *Bot) EditMessageMedia(media InputMedia, opts *EditMessageMediaOpts) (*Message, bool, error) {
 	v := urlLib.Values{}
 	data := map[string]NamedReader{}
 	inputMediaBs, err := media.InputMediaParams("media", data)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal field media: %w", err)
+		return nil, false, fmt.Errorf("failed to marshal field media: %w", err)
 	}
 	v.Add("media", string(inputMediaBs))
 	if opts != nil {
@@ -837,18 +856,26 @@ func (bot *Bot) EditMessageMedia(media InputMedia, opts *EditMessageMediaOpts) (
 		v.Add("inline_message_id", opts.InlineMessageId)
 		bs, err := json.Marshal(opts.ReplyMarkup)
 		if err != nil {
-			return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			return nil, false, fmt.Errorf("failed to marshal field reply_markup: %w", err)
 		}
 		v.Add("reply_markup", string(bs))
 	}
 
 	r, err := bot.Post("editMessageMedia", v, data)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	var m Message
-	return &m, json.Unmarshal(r, &m)
+	if err := json.Unmarshal(r, &m); err != nil {
+		var b bool
+		if err := json.Unmarshal(r, &b); err != nil {
+			return nil, false, err
+		}
+		return nil, b, nil
+	}
+	return &m, true, nil
+
 }
 
 // EditMessageReplyMarkupOpts is the set of optional fields for Bot.EditMessageReplyMarkup.
@@ -866,7 +893,7 @@ type EditMessageReplyMarkupOpts struct {
 // EditMessageReplyMarkup Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.
 // - opts (type EditMessageReplyMarkupOpts): All optional parameters.
 // https://core.telegram.org/bots/api#editmessagereplymarkup
-func (bot *Bot) EditMessageReplyMarkup(opts *EditMessageReplyMarkupOpts) (*Message, error) {
+func (bot *Bot) EditMessageReplyMarkup(opts *EditMessageReplyMarkupOpts) (*Message, bool, error) {
 	v := urlLib.Values{}
 	if opts != nil {
 		if opts.ChatId != 0 {
@@ -878,18 +905,26 @@ func (bot *Bot) EditMessageReplyMarkup(opts *EditMessageReplyMarkupOpts) (*Messa
 		v.Add("inline_message_id", opts.InlineMessageId)
 		bs, err := json.Marshal(opts.ReplyMarkup)
 		if err != nil {
-			return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			return nil, false, fmt.Errorf("failed to marshal field reply_markup: %w", err)
 		}
 		v.Add("reply_markup", string(bs))
 	}
 
 	r, err := bot.Get("editMessageReplyMarkup", v)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	var m Message
-	return &m, json.Unmarshal(r, &m)
+	if err := json.Unmarshal(r, &m); err != nil {
+		var b bool
+		if err := json.Unmarshal(r, &b); err != nil {
+			return nil, false, err
+		}
+		return nil, b, nil
+	}
+	return &m, true, nil
+
 }
 
 // EditMessageTextOpts is the set of optional fields for Bot.EditMessageText.
@@ -914,7 +949,7 @@ type EditMessageTextOpts struct {
 // - text (type string): New text of the message, 1-4096 characters after entities parsing
 // - opts (type EditMessageTextOpts): All optional parameters.
 // https://core.telegram.org/bots/api#editmessagetext
-func (bot *Bot) EditMessageText(text string, opts *EditMessageTextOpts) (*Message, error) {
+func (bot *Bot) EditMessageText(text string, opts *EditMessageTextOpts) (*Message, bool, error) {
 	v := urlLib.Values{}
 	v.Add("text", text)
 	if opts != nil {
@@ -929,25 +964,33 @@ func (bot *Bot) EditMessageText(text string, opts *EditMessageTextOpts) (*Messag
 		if opts.Entities != nil {
 			bs, err := json.Marshal(opts.Entities)
 			if err != nil {
-				return nil, fmt.Errorf("failed to marshal field entities: %w", err)
+				return nil, false, fmt.Errorf("failed to marshal field entities: %w", err)
 			}
 			v.Add("entities", string(bs))
 		}
 		v.Add("disable_web_page_preview", strconv.FormatBool(opts.DisableWebPagePreview))
 		bs, err := json.Marshal(opts.ReplyMarkup)
 		if err != nil {
-			return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			return nil, false, fmt.Errorf("failed to marshal field reply_markup: %w", err)
 		}
 		v.Add("reply_markup", string(bs))
 	}
 
 	r, err := bot.Get("editMessageText", v)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	var m Message
-	return &m, json.Unmarshal(r, &m)
+	if err := json.Unmarshal(r, &m); err != nil {
+		var b bool
+		if err := json.Unmarshal(r, &b); err != nil {
+			return nil, false, err
+		}
+		return nil, b, nil
+	}
+	return &m, true, nil
+
 }
 
 // ExportChatInviteLink Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the new invite link as String on success.
@@ -970,6 +1013,8 @@ func (bot *Bot) ExportChatInviteLink(chatId int64) (string, error) {
 type ForwardMessageOpts struct {
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the forwarded message from forwarding and saving
+	ProtectContent bool
 }
 
 // ForwardMessage Use this method to forward messages of any kind. Service messages can't be forwarded. On success, the sent Message is returned.
@@ -985,6 +1030,7 @@ func (bot *Bot) ForwardMessage(chatId int64, fromChatId int64, messageId int64, 
 	v.Add("message_id", strconv.FormatInt(messageId, 10))
 	if opts != nil {
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 	}
 
 	r, err := bot.Get("forwardMessage", v)
@@ -1454,6 +1500,8 @@ type SendAnimationOpts struct {
 	CaptionEntities []MessageEntity
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -1533,6 +1581,7 @@ func (bot *Bot) SendAnimation(chatId int64, animation InputFile, opts *SendAnima
 			v.Add("caption_entities", string(bs))
 		}
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -1573,6 +1622,8 @@ type SendAudioOpts struct {
 	Thumb InputFile
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -1649,6 +1700,7 @@ func (bot *Bot) SendAudio(chatId int64, audio InputFile, opts *SendAudioOpts) (*
 			}
 		}
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -1698,6 +1750,8 @@ type SendContactOpts struct {
 	Vcard string
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -1721,6 +1775,7 @@ func (bot *Bot) SendContact(chatId int64, phoneNumber string, firstName string, 
 		v.Add("last_name", opts.LastName)
 		v.Add("vcard", opts.Vcard)
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -1749,6 +1804,8 @@ type SendDiceOpts struct {
 	Emoji string
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -1767,6 +1824,7 @@ func (bot *Bot) SendDice(chatId int64, opts *SendDiceOpts) (*Message, error) {
 	if opts != nil {
 		v.Add("emoji", opts.Emoji)
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -1803,6 +1861,8 @@ type SendDocumentOpts struct {
 	DisableContentTypeDetection bool
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -1874,6 +1934,7 @@ func (bot *Bot) SendDocument(chatId int64, document InputFile, opts *SendDocumen
 		}
 		v.Add("disable_content_type_detection", strconv.FormatBool(opts.DisableContentTypeDetection))
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -1900,6 +1961,8 @@ func (bot *Bot) SendDocument(chatId int64, document InputFile, opts *SendDocumen
 type SendGameOpts struct {
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -1919,6 +1982,7 @@ func (bot *Bot) SendGame(chatId int64, gameShortName string, opts *SendGameOpts)
 	v.Add("game_short_name", gameShortName)
 	if opts != nil {
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -1973,6 +2037,8 @@ type SendInvoiceOpts struct {
 	IsFlexible bool
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2037,6 +2103,7 @@ func (bot *Bot) SendInvoice(chatId int64, title string, description string, payl
 		v.Add("send_email_to_provider", strconv.FormatBool(opts.SendEmailToProvider))
 		v.Add("is_flexible", strconv.FormatBool(opts.IsFlexible))
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2069,6 +2136,8 @@ type SendLocationOpts struct {
 	ProximityAlertRadius int64
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2102,6 +2171,7 @@ func (bot *Bot) SendLocation(chatId int64, latitude float64, longitude float64, 
 			v.Add("proximity_alert_radius", strconv.FormatInt(opts.ProximityAlertRadius, 10))
 		}
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2128,6 +2198,8 @@ func (bot *Bot) SendLocation(chatId int64, latitude float64, longitude float64, 
 type SendMediaGroupOpts struct {
 	// Sends messages silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent messages from forwarding and saving
+	ProtectContent bool
 	// If the messages are a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2160,6 +2232,7 @@ func (bot *Bot) SendMediaGroup(chatId int64, media []InputMedia, opts *SendMedia
 	}
 	if opts != nil {
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2185,6 +2258,8 @@ type SendMessageOpts struct {
 	DisableWebPagePreview bool
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of sent messages from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2213,6 +2288,7 @@ func (bot *Bot) SendMessage(chatId int64, text string, opts *SendMessageOpts) (*
 		}
 		v.Add("disable_web_page_preview", strconv.FormatBool(opts.DisableWebPagePreview))
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2245,6 +2321,8 @@ type SendPhotoOpts struct {
 	CaptionEntities []MessageEntity
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2294,6 +2372,7 @@ func (bot *Bot) SendPhoto(chatId int64, photo InputFile, opts *SendPhotoOpts) (*
 			v.Add("caption_entities", string(bs))
 		}
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2340,6 +2419,8 @@ type SendPollOpts struct {
 	IsClosed bool
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2389,6 +2470,7 @@ func (bot *Bot) SendPoll(chatId int64, question string, options []string, opts *
 		}
 		v.Add("is_closed", strconv.FormatBool(opts.IsClosed))
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2415,6 +2497,8 @@ func (bot *Bot) SendPoll(chatId int64, question string, options []string, opts *
 type SendStickerOpts struct {
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2455,6 +2539,7 @@ func (bot *Bot) SendSticker(chatId int64, sticker InputFile, opts *SendStickerOp
 	}
 	if opts != nil {
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2489,6 +2574,8 @@ type SendVenueOpts struct {
 	GooglePlaceType string
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2518,6 +2605,7 @@ func (bot *Bot) SendVenue(chatId int64, latitude float64, longitude float64, tit
 		v.Add("google_place_id", opts.GooglePlaceId)
 		v.Add("google_place_type", opts.GooglePlaceType)
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2560,6 +2648,8 @@ type SendVideoOpts struct {
 	SupportsStreaming bool
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2640,6 +2730,7 @@ func (bot *Bot) SendVideo(chatId int64, video InputFile, opts *SendVideoOpts) (*
 		}
 		v.Add("supports_streaming", strconv.FormatBool(opts.SupportsStreaming))
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2672,6 +2763,8 @@ type SendVideoNoteOpts struct {
 	Thumb InputFile
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2739,6 +2832,7 @@ func (bot *Bot) SendVideoNote(chatId int64, videoNote InputFile, opts *SendVideo
 			}
 		}
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -2773,6 +2867,8 @@ type SendVoiceOpts struct {
 	Duration int64
 	// Sends the message silently. Users will receive a notification with no sound.
 	DisableNotification bool
+	// Protects the contents of the sent message from forwarding and saving
+	ProtectContent bool
 	// If the message is a reply, ID of the original message
 	ReplyToMessageId int64
 	// Pass True, if the message should be sent even if the specified replied-to message is not found
@@ -2825,6 +2921,7 @@ func (bot *Bot) SendVoice(chatId int64, voice InputFile, opts *SendVoiceOpts) (*
 			v.Add("duration", strconv.FormatInt(opts.Duration, 10))
 		}
 		v.Add("disable_notification", strconv.FormatBool(opts.DisableNotification))
+		v.Add("protect_content", strconv.FormatBool(opts.ProtectContent))
 		if opts.ReplyToMessageId != 0 {
 			v.Add("reply_to_message_id", strconv.FormatInt(opts.ReplyToMessageId, 10))
 		}
@@ -3006,7 +3103,7 @@ type SetGameScoreOpts struct {
 // - score (type int64): New score, must be non-negative
 // - opts (type SetGameScoreOpts): All optional parameters.
 // https://core.telegram.org/bots/api#setgamescore
-func (bot *Bot) SetGameScore(userId int64, score int64, opts *SetGameScoreOpts) (*Message, error) {
+func (bot *Bot) SetGameScore(userId int64, score int64, opts *SetGameScoreOpts) (*Message, bool, error) {
 	v := urlLib.Values{}
 	v.Add("user_id", strconv.FormatInt(userId, 10))
 	v.Add("score", strconv.FormatInt(score, 10))
@@ -3024,11 +3121,19 @@ func (bot *Bot) SetGameScore(userId int64, score int64, opts *SetGameScoreOpts) 
 
 	r, err := bot.Get("setGameScore", v)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	var m Message
-	return &m, json.Unmarshal(r, &m)
+	if err := json.Unmarshal(r, &m); err != nil {
+		var b bool
+		if err := json.Unmarshal(r, &b); err != nil {
+			return nil, false, err
+		}
+		return nil, b, nil
+	}
+	return &m, true, nil
+
 }
 
 // SetMyCommandsOpts is the set of optional fields for Bot.SetMyCommands.
@@ -3242,7 +3347,7 @@ type StopMessageLiveLocationOpts struct {
 // StopMessageLiveLocation Use this method to stop updating a live location message before live_period expires. On success, if the message is not an inline message, the edited Message is returned, otherwise True is returned.
 // - opts (type StopMessageLiveLocationOpts): All optional parameters.
 // https://core.telegram.org/bots/api#stopmessagelivelocation
-func (bot *Bot) StopMessageLiveLocation(opts *StopMessageLiveLocationOpts) (*Message, error) {
+func (bot *Bot) StopMessageLiveLocation(opts *StopMessageLiveLocationOpts) (*Message, bool, error) {
 	v := urlLib.Values{}
 	if opts != nil {
 		if opts.ChatId != 0 {
@@ -3254,18 +3359,26 @@ func (bot *Bot) StopMessageLiveLocation(opts *StopMessageLiveLocationOpts) (*Mes
 		v.Add("inline_message_id", opts.InlineMessageId)
 		bs, err := json.Marshal(opts.ReplyMarkup)
 		if err != nil {
-			return nil, fmt.Errorf("failed to marshal field reply_markup: %w", err)
+			return nil, false, fmt.Errorf("failed to marshal field reply_markup: %w", err)
 		}
 		v.Add("reply_markup", string(bs))
 	}
 
 	r, err := bot.Get("stopMessageLiveLocation", v)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	var m Message
-	return &m, json.Unmarshal(r, &m)
+	if err := json.Unmarshal(r, &m); err != nil {
+		var b bool
+		if err := json.Unmarshal(r, &b); err != nil {
+			return nil, false, err
+		}
+		return nil, b, nil
+	}
+	return &m, true, nil
+
 }
 
 // StopPollOpts is the set of optional fields for Bot.StopPoll.
