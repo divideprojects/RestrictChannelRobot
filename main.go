@@ -28,7 +28,7 @@ func main() {
 	updater := ext.NewUpdater(nil)
 	dispatcher := updater.Dispatcher
 
-	// Handlers for runnning commands.
+	// Handlers for running commands.
 	dispatcher.AddHandler(handlers.NewCommand("start", start))
 	dispatcher.AddHandler(handlers.NewCommand("help", help))
 	dispatcher.AddHandler(handlers.NewCommand("source", source))

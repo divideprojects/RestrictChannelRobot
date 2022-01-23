@@ -8,7 +8,7 @@ Can be found on telegram as [@RestrictChannelRobot](https://telegram.dog/Restric
  - `BOT_TOKEN` - Get it from [@BotFather](https://t.me/BotFather)
 -----------------
 
-* Some advanced configurarion may also require other variables, but with just bot token you are good to go!
+* Some advanced configuration may also require other variables, but with just bot token you are good to go!
 
 # Deploying
 
