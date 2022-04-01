@@ -1,4 +1,23 @@
 # Restrict Channel Robot
+
+<p align='center'>
+  <img src="https://img.shields.io/github/forks/DivideProjects/restrictchannelrobot?style=flat-square" alt="Forks">
+  <img src="https://img.shields.io/github/stars/DivideProjects/restrictchannelrobot?style=flat-square" alt="Stars">
+  <img src="https://img.shields.io/github/issues/DivideProjects/restrictchannelrobot?style=flat-square" alt="Issues">
+  <img src="https://img.shields.io/github/license/DivideProjects/restrictchannelrobot?style=flat-square" alt="LICENSE">
+  <img src="https://img.shields.io/github/contributors/DivideProjects/restrictchannelrobot?style=flat-square" alt="Contributors">
+  <img src="https://img.shields.io/github/repo-size/DivideProjects/restrictchannelrobot?style=flat-square" alt="Repo Size">
+  <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/DivideProjects/restrictchannelrobot&amp;title=Profile%20Views" alt="Views">
+</p>
+
+<p align='center'>
+  <a href="https://go.dev/" alt="made-with-go"> <img src="https://img.shields.io/badge/Made%20with-Go-1f425f.svg?style=flat-square&logo=go&color=blue" /> </a>
+  <a href="https://github.com/DivideProjects/restrictchannelrobot" alt="Docker!"> <img src="https://img.shields.io/docker/pulls/divideprojects/restrictchannelrobot.svg" /> </a>
+  <a href="https://hub.docker.com/r/divideprojects/restrictchannelrobot" alt="Docker Image Version"> <img src="https://img.shields.io/docker/v/divideprojects/restrictchannelrobot/latest" /> </a>
+  <a href="https://deepsource.io/gh/DivideProjects/restrictchannelrobot/?ref=repository-badge"><img src="https://static.deepsource.io/deepsource-badge-light-mini.svg" alt="DeepSource"></a>
+</p>
+
+
 Telegram Bot, written in GoLang to delete messages and ban anonymous users who send as channel in groups.
 
 Can be found on telegram as [@RestrictChannelRobot](https://telegram.dog/RestrictChannelRobot)
@@ -14,13 +33,8 @@ Can be found on telegram as [@RestrictChannelRobot](https://telegram.dog/Restric
 
 ## Deploy via Heroku.
 <p>
-  <a href="https://heroku.com/deploy?template=https://github.com/DivideProjects/RestrictChannelRobot"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy"></a>
+  <a href="https://heroku.com/deploy?template=https://github.com/DivideProjects/restrictchannelrobot"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy"></a>
 </p>
-
-## Deploy via Dockerfile
-Make sure to change the CMD to `["/RestrictChannelRobot"]`
-
-Otherwise the bot may not work!
 
 ## Support   
 Join the [Telegram Group](https://t.me/DivideProjectsDiscussion) for support and the [Channel](https://t.me/DivideProjects) for updates.
