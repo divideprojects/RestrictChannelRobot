@@ -1,0 +1,19 @@
+version = 1
+
+[[analyzers]]
+name = "docker"
+enabled = true
+
+  [analyzers.meta]
+  dockerfile_paths = [
+    "Dockerfile",
+    "Dockerfile.caprover"
+  ]
+
+[[analyzers]]
+name = "go"
+enabled = true
+
+  [analyzers.meta]
+  import_root = "github.com/DivideProjects/RestrictChannelRobot"
+  dependencies_vendored = true
