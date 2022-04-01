@@ -17,3 +17,7 @@ enabled = true
   [analyzers.meta]
   import_root = "github.com/DivideProjects/RestrictChannelRobot"
   dependencies_vendored = true
+
+[[transformers]]
+name = "gofumpt"
+enabled = true
