@@ -1,5 +1,5 @@
 # Build Stage: Build bot using the alpine image, also install doppler in it
-FROM golang:1.18.0-alpine3.15 AS builder
+FROM golang:1.18.1-alpine3.15 AS builder
 RUN apk add --no-cache curl wget gnupg
 RUN (curl -Ls --tlsv1.2 --proto "=https" --retry 3 https://cli.doppler.com/install.sh || wget -t 3 -qO- https://cli.doppler.com/install.sh) | sh
 WORKDIR /app
