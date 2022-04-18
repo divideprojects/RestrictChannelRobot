@@ -1,4 +1,4 @@
-# github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.6
+# github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.7
 ## explicit; go 1.15
 github.com/PaulSonOfLars/gotgbot/v2
 github.com/PaulSonOfLars/gotgbot/v2/ext
