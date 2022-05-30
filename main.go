@@ -14,10 +14,11 @@ func main() {
 	b, err := gotgbot.NewBot(
 		botToken,
 		&gotgbot.BotOpts{
-			APIURL:      apiUrl,
+			DefaultRequestOpts: &gotgbot.RequestOpts{
+				Timeout: gotgbot.DefaultTimeout,
+				APIURL:  apiUrl,
+			},
 			Client:      http.Client{},
-			GetTimeout:  gotgbot.DefaultGetTimeout,
-			PostTimeout: gotgbot.DefaultPostTimeout,
 		},
 	)
 	if err != nil {
@@ -96,7 +97,7 @@ func start(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// stay silent in group chats
 	if chat.Type != "private" {
-		return ext.EndGroups
+		return nil
 	}
 
 	text = fmt.Sprintf(
@@ -123,7 +124,7 @@ func start(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	return ext.EndGroups
+	return nil
 }
 
 func help(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -134,7 +135,7 @@ func help(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// stay silent in group chats
 	if chat.Type != "private" {
-		return ext.EndGroups
+		return nil
 	}
 
 	text = fmt.Sprint(
@@ -156,7 +157,7 @@ func help(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	return ext.EndGroups
+	return nil
 }
 
 func source(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -167,7 +168,7 @@ func source(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// stay silent in group chats
 	if chat.Type != "private" {
-		return ext.EndGroups
+		return nil
 	}
 
 	text = fmt.Sprintf(
@@ -198,7 +199,7 @@ func source(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	return ext.EndGroups
+	return nil
 }
 
 func restrictChannels(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -206,13 +207,13 @@ func restrictChannels(bot *gotgbot.Bot, ctx *ext.Context) error {
 	chat := ctx.EffectiveChat
 	sender := ctx.EffectiveSender
 
-	_, err := msg.Delete(bot)
+	_, err := msg.Delete(bot, nil)
 	if err != nil {
 		fmt.Println("[RestrictChannels] Failed to delete message:", err.Error())
 		return err
 	}
 
-	_, err = chat.BanSenderChat(bot, sender.Id())
+	_, err = chat.BanSenderChat(bot, sender.Id(), nil)
 	if err != nil {
 		fmt.Println("[RestrictChannels] Failed to ban sender:", err.Error())
 		return err

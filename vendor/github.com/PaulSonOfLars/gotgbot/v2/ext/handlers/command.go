@@ -12,7 +12,7 @@ type Command struct {
 	Triggers     []rune
 	AllowEdited  bool
 	AllowChannel bool
-	Command      string
+	Command      string // should be lowercase for case-insensitivity
 	Response     Response
 }
 
@@ -21,7 +21,7 @@ func NewCommand(c string, r Response) Command {
 		Triggers:     []rune{'/'},
 		AllowEdited:  false,
 		AllowChannel: false,
-		Command:      c,
+		Command:      strings.ToLower(c),
 		Response:     r,
 	}
 }
@@ -67,7 +67,7 @@ func (c Command) Name() string {
 	return "command_" + c.Command
 }
 
-func (c Command) checkMessage(bot *gotgbot.Bot, msg *gotgbot.Message) bool {
+func (c Command) checkMessage(b *gotgbot.Bot, msg *gotgbot.Message) bool {
 	text := msg.Text
 	if msg.Caption != "" {
 		text = msg.Caption
@@ -80,7 +80,7 @@ func (c Command) checkMessage(bot *gotgbot.Bot, msg *gotgbot.Message) bool {
 		}
 
 		split := strings.Split(strings.ToLower(strings.Fields(text)[0]), "@")
-		if len(split) > 1 && split[1] != strings.ToLower(bot.User.Username) {
+		if len(split) > 1 && split[1] != strings.ToLower(b.User.Username) {
 			return false
 		}
 		cmd = split[0][1:]
