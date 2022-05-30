@@ -14,10 +14,11 @@ func main() {
 	b, err := gotgbot.NewBot(
 		botToken,
 		&gotgbot.BotOpts{
-			APIURL:      apiUrl,
+			DefaultRequestOpts: &gotgbot.RequestOpts{
+				Timeout: gotgbot.DefaultTimeout,
+				APIURL:  apiUrl,
+			},
 			Client:      http.Client{},
-			GetTimeout:  gotgbot.DefaultGetTimeout,
-			PostTimeout: gotgbot.DefaultPostTimeout,
 		},
 	)
 	if err != nil {
