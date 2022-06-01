@@ -309,6 +309,7 @@ func unignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 		if channelId == i {
 			unignoreChat(chat.Id, channelId)
 			msg.Reply(bot, "Removed this channel from ignore list.", nil)
+			return ext.EndGroups
 		}
 	}
 
@@ -331,11 +332,15 @@ func ignoreList(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	ignoreList := getIgnoreSettings(chat.Id).IgnoredChannels
 
-	text = fmt.Sprintf(
-		"Here is the list of channels currently ignored by me:",
-	)
-	for _, i := range ignoreList {
-		text += fmt.Sprintf("\n - %d", i)
+	if len(ignoreList) > 1 {
+		text = fmt.Sprintf(
+			"Here is the list of channels currently ignored by me:",
+		)
+		for _, i := range ignoreList {
+			text += fmt.Sprintf("\n - <code>%d</code>", i)
+		}
+	} else {
+		text = "There are no channels in ignore list."
 	}
 
 	msg.Reply(bot, text, nil)
