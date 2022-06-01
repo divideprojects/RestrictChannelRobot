@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -251,13 +250,14 @@ func ignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
+	args := ctx.Args()
 
 	if chat.Type != "supergroup" {
 		msg.Reply(bot, "This command can only be used in Groups.", nil)
 		return nil
 	}
 
-	if msg.ReplyToMessage == nil && len(strings.Split(msg.Text, " ")) == 1 {
+	if msg.ReplyToMessage == nil && msg.ReplyToMessage.SenderChat == nil && len(args) == 1 {
 		msg.Reply(bot, "Please reply to a message or pass the channel id to add a user to ignore list.", nil)
 		return ext.EndGroups
 	}
@@ -286,13 +286,14 @@ func unignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
+	args := ctx.Args()
 
 	if chat.Type != "supergroup" {
 		msg.Reply(bot, "This command can only be used in Groups.", nil)
 		return nil
 	}
 
-	if msg.ReplyToMessage == nil && len(strings.Split(msg.Text, " ")) == 1 {
+	if msg.ReplyToMessage == nil && msg.ReplyToMessage.SenderChat == nil && len(args) == 1 {
 		msg.Reply(bot, "Please reply to a message or pass the channel id to add a user to ignore list.", nil)
 		return ext.EndGroups
 	}
