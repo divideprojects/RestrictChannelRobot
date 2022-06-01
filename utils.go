@@ -7,7 +7,7 @@ import (
 	"github.com/PaulSonOfLars/gotgbot/v2"
 )
 
-// this function will extract the 
+// this function will extract the
 func extractChannelId(msg *gotgbot.Message) (channelId int64, err error) {
 
 	args := strings.Split(msg.Text, " ")

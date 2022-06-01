@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/PaulSonOfLars/gotgbot/v2"
 	"github.com/PaulSonOfLars/gotgbot/v2/ext"
@@ -35,8 +36,8 @@ func main() {
 	dispatcher.AddHandler(handlers.NewCommand("source", source))
 	dispatcher.AddHandler(handlers.NewCommand("ignore", ignoreChannel))
 	dispatcher.AddHandler(handlers.NewCommand("unignore", unignoreChannel))
-	dispatcher.AddHandler(handlers.NewCommand("setlog", setLogChannel))
-	dispatcher.AddHandler(handlers.NewCommand("unsetlog", unsetLogChannel))
+	//dispatcher.AddHandler(handlers.NewCommand("setlog", setLogChannel))
+	//dispatcher.AddHandler(handlers.NewCommand("unsetlog", unsetLogChannel))
 	dispatcher.AddHandler(handlers.NewCommand("ignorelist", ignoreList))
 	dispatcher.AddHandler(handlers.NewCommand("start", start))
 	dispatcher.AddHandlerToGroup(
@@ -183,8 +184,8 @@ func help(bot *gotgbot.Bot, ctx *ext.Context) error {
 		"\n/ignore - ✅ unban and allow that user to sending message as channel (admin only).",
 		"\n/ignorelist - 📋 get list ignored channel.",
 		"\n/unignore - ⛔️ ban an unallow that user to sending message as channel (admin only).",
-		"\n/setlog - 🗞️ setting log chat (admin only).",
-		"\n/unsetlog - 🗑️ remove the log chat (admin only).",
+		//"\n/setlog - 🗞️ setting log chat (admin only).",
+		//"\n/unsetlog - 🗑️ remove the log chat (admin only).",
 		"\n/source - 📚 get source code.",
 	)
 
@@ -256,6 +257,11 @@ func ignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return nil
 	}
 
+	if msg.ReplyToMessage == nil && len(strings.Split(msg.Text, " ")) == 1 {
+		msg.Reply(bot, "Please reply to a message or pass the channel id to add a user to ignore list.", nil)
+		return ext.EndGroups
+	}
+
 	channelId, err := extractChannelId(msg)
 
 	if err != nil {
@@ -284,6 +290,11 @@ func unignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 	if chat.Type != "supergroup" {
 		msg.Reply(bot, "This command can only be used in Groups.", nil)
 		return nil
+	}
+
+	if msg.ReplyToMessage == nil && len(strings.Split(msg.Text, " ")) == 1 {
+		msg.Reply(bot, "Please reply to a message or pass the channel id to add a user to ignore list.", nil)
+		return ext.EndGroups
 	}
 
 	channelId, err := extractChannelId(msg)
