@@ -16,13 +16,12 @@ func extractChannelId(msg *gotgbot.Message) (channelId int64, err error) {
 		channelId = msg.ReplyToMessage.SenderChat.Id
 	} else {
 		if strings.HasPrefix(args[1], "-100") {
-			return msg.SenderChat.Id, err
+			channelId, err = strconv.ParseInt(args[1], 10, 64)
+			if err != nil {
+				return 0, err
+			}
 		}
 
-		channelId, err = strconv.ParseInt(args[1], 10, 64)
-		if err != nil {
-			return 0, err
-		}
 	}
 
 	return channelId, err
