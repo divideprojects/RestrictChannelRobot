@@ -250,19 +250,18 @@ func ignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
-	args := ctx.Args()
 
 	if chat.Type != "supergroup" {
 		msg.Reply(bot, "This command can only be used in Groups.", nil)
 		return nil
 	}
 
-	if msg.ReplyToMessage == nil && msg.ReplyToMessage.SenderChat == nil && len(args) == 1 {
+	channelId, err := extractChannelId(msg)
+
+	if channelId == -1 {
 		msg.Reply(bot, "Please reply to a message or pass the channel id to add a user to ignore list.", nil)
 		return ext.EndGroups
 	}
-
-	channelId, err := extractChannelId(msg)
 
 	if err != nil {
 		msg.Reply(bot, "Failed to extract channel id: "+err.Error(), nil)
@@ -286,19 +285,18 @@ func unignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
-	args := ctx.Args()
 
 	if chat.Type != "supergroup" {
 		msg.Reply(bot, "This command can only be used in Groups.", nil)
 		return nil
 	}
 
-	if msg.ReplyToMessage == nil && msg.ReplyToMessage.SenderChat == nil && len(args) == 1 {
+	channelId, err := extractChannelId(msg)
+
+	if channelId == -1 {
 		msg.Reply(bot, "Please reply to a message or pass the channel id to add a user to ignore list.", nil)
 		return ext.EndGroups
 	}
-
-	channelId, err := extractChannelId(msg)
 
 	if err != nil {
 		msg.Reply(bot, "Failed to extract channel id: "+err.Error(), nil)

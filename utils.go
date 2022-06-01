@@ -21,6 +21,7 @@ func extractChannelId(msg *gotgbot.Message) (channelId int64, err error) {
 				return 0, err
 			}
 		}
+		return -1, err
 
 	}
 
