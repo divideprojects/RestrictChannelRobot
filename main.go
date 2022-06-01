@@ -174,10 +174,10 @@ func help(bot *gotgbot.Bot, ctx *ext.Context) error {
 		"\n - Delete Message Permissions: To delete the messages sent by channel",
 
 		"\n\n<b>Some Tips:</b>",
-		"\n1. To ignore channel use /ignore with replying message or you can pass with channel ids. for more help type /ignore.",
-		"\n2. To unignore channel use /unignore with replying message or you can pass with channel ids. for more help type /unignore.",
-		"\n3. To get all list of ignored channel use ignorelist.",
-		"\n4. If you want to set a channel as log chat, send /setlog in channel and forward to your group. You must add me in that channel to work.",
+		"\n1. To ignore a channel use /ignore by replying a message from that channel or you can pass a channel id. for more help type /ignore.",
+		"\n2. To unignore a channel use /unignore by replying a message from that channel or you can pass a channel id. for more help type /unignore.",
+		"\n3. To get the list of all ignored channel use /ignorelist.",
+		"\n4. If you want to set a channel as log chat, send /setlog in channel and forward to your group. You must add me in that channel as admin with send message permission to work.",
 
 		"\n\n<b>Available Commands:</b>",
 		"\n/start - ✨ display start message.",
