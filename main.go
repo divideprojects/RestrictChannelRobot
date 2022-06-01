@@ -250,6 +250,12 @@ func ignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
+
+	if chat.Type != "supergroup" {
+		msg.Reply(bot, "This command can only be used in Groups.", nil)
+		return nil
+	}
+
 	channelId, err := extractChannelId(msg)
 
 	if err != nil {
@@ -274,6 +280,12 @@ func unignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
+
+	if chat.Type != "supergroup" {
+		msg.Reply(bot, "This command can only be used in Groups.", nil)
+		return nil
+	}
+
 	channelId, err := extractChannelId(msg)
 
 	if err != nil {
@@ -298,6 +310,12 @@ func ignoreList(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
+
+	if chat.Type != "supergroup" {
+		msg.Reply(bot, "This command can only be used in Groups.", nil)
+		return nil
+	}
+
 	var text string
 
 	ignoreList := getIgnoreSettings(chat.Id).IgnoredChannels
@@ -319,6 +337,11 @@ func setLogChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
 
+	if chat.Type != "supergroup" {
+		msg.Reply(bot, "This command can only be used in Groups.", nil)
+		return nil
+	}
+
 	channelId, err := extractChannelId(msg)
 
 	if err != nil {
@@ -337,6 +360,11 @@ func unsetLogChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
+
+	if chat.Type != "supergroup" {
+		msg.Reply(bot, "This command can only be used in Groups.", nil)
+		return nil
+	}
 
 	setLogChannelID(chat.Id, 0)
 	msg.Reply(bot, "Log Channel has been unset.", nil)
