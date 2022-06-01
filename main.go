@@ -259,7 +259,7 @@ func ignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 	channelId, err := extractChannelId(msg)
 
 	if channelId == -1 {
-		msg.Reply(bot, "Please reply to a message or pass the channel id to add a user to ignore list.", nil)
+		msg.Reply(bot, "Please reply to a message from a channel or pass the channel id to add a user to ignore list.", nil)
 		return ext.EndGroups
 	}
 
@@ -294,7 +294,7 @@ func unignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 	channelId, err := extractChannelId(msg)
 
 	if channelId == -1 {
-		msg.Reply(bot, "Please reply to a message or pass the channel id to add a user to ignore list.", nil)
+		msg.Reply(bot, "Please reply to a message from a channel or pass the channel id to add a user to ignore list.", nil)
 		return ext.EndGroups
 	}
 
