@@ -409,7 +409,11 @@ func restrictChannels(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	bot.SendMessage(getLogSettings(chat.Id).LogChannelID, fmt.Sprintf("[RestrictChannels] Banning %s (%d)\n", sender.Name(), senderId), nil)
+	logChannelId := getLogSettings(chat.Id).LogChannelID
+
+	if logChannelId != 0 {
+		bot.SendMessage(logChannelId, fmt.Sprintf("[RestrictChannels] Banning %s (%d)\n", sender.Name(), senderId), nil)
+	}
 	log.Printf("[RestrictChannels] Banning %s (%d) in %s (%d)\n", sender.Name(), sender.Id(), chat.Title, chat.Id)
 
 	return ext.ContinueGroups
