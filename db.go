@@ -10,11 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type LogSettings struct {
-	ChatId       int64 `bson:"_id,omitempty" json:"_id,omitempty"`
-	LogChannelID int64 `bson:"log_channel" json:"log_channel"`
-}
-
 type IgnoreList struct {
 	ChatId          int64   `bson:"_id,omitempty" json:"_id,omitempty"`
 	IgnoredChannels []int64 `bson:"ignored_channels" json:"ignored_channels"`
@@ -28,8 +23,7 @@ var (
 	bgCtx = context.Background()
 
 	// define collections
-	ignoreListCollection  *mongo.Collection
-	logSettingsCollection *mongo.Collection
+	ignoreListCollection *mongo.Collection
 )
 
 func init() {
@@ -51,7 +45,6 @@ func init() {
 	// Open Connections to Collections
 	log.Info("Opening Database Collections...")
 	ignoreListCollection = mongoClient.Database(databaseName).Collection("ignore_list")
-	logSettingsCollection = mongoClient.Database(databaseName).Collection("log_settings")
 }
 
 func updateOne(collecion *mongo.Collection, filter bson.M, data interface{}) (err error) {
@@ -67,77 +60,10 @@ func findOne(collecion *mongo.Collection, filter bson.M) (res *mongo.SingleResul
 	return
 }
 
-func countDocs(collecion *mongo.Collection, filter bson.M) (count int64, err error) {
-	count, err = collecion.CountDocuments(tdCtx, filter)
-	if err != nil {
-		log.Errorf("[Database][countDocs]: %v", err)
-	}
-	return
-}
-
-func findAll(collecion *mongo.Collection, filter bson.M) (cur *mongo.Cursor) {
-	cur, err := collecion.Find(tdCtx, filter)
-	if err != nil {
-		log.Errorf("[Database][findAll]: %v", err)
-	}
-	return
-}
-
-func deleteOne(collecion *mongo.Collection, filter bson.M) (err error) {
-	_, err = collecion.DeleteOne(tdCtx, filter)
-	if err != nil {
-		log.Errorf("[Database][deleteOne]: %v", err)
-	}
-	return
-}
-
-func deleteMany(collecion *mongo.Collection, filter bson.M) (err error) {
-	_, err = collecion.DeleteMany(tdCtx, filter)
-	if err != nil {
-		log.Errorf("[Database][deleteMany]: %v", err)
-	}
-	return
-}
-
-// GetChatSettings Get admin settings for a chat
-func getLogSettings(chatID int64) *LogSettings {
-	return _checkLogSetting(chatID)
-}
-
-// check Chat Admin Settings, used to get data before performing any operation
-func _checkLogSetting(chatID int64) (adminSrc *LogSettings) {
-	dLogSrc := &LogSettings{ChatId: chatID, LogChannelID: 0}
-
-	err := findOne(logSettingsCollection, bson.M{"_id": chatID}).Decode(&adminSrc)
-	if err == mongo.ErrNoDocuments {
-		adminSrc = dLogSrc
-		err := updateOne(logSettingsCollection, bson.M{"_id": chatID}, dLogSrc)
-		if err != nil {
-			log.Errorf("[Database][checkChatSetting]: %v ", err)
-		}
-	} else if err != nil {
-		adminSrc = dLogSrc
-		log.Errorf("[Database][checkChatSetting]: %v ", err)
-	}
-	return adminSrc
-}
-
-// SetAnonAdminMode Set anon admin mode for a chat
-func setLogChannelID(chatId int64, logChannelId int64) {
-	dLogSrc := _checkLogSetting(chatId)
-	dLogSrc.LogChannelID = logChannelId
-
-	err := updateOne(logSettingsCollection, bson.M{"_id": chatId}, dLogSrc)
-	if err != nil {
-		log.Errorf("[Database] SetLogChannelID: %v - %d", err, chatId)
-	}
-}
-
 func getIgnoreSettings(chatID int64) *IgnoreList {
 	return _checkIgnoreSettings(chatID)
 }
 
-// check Chat Approval Settings, used to get data before performing any operation
 func _checkIgnoreSettings(chatID int64) (ignorerc *IgnoreList) {
 	defaultIgnoreSettings := &IgnoreList{ChatId: chatID, IgnoredChannels: make([]int64, 0)}
 

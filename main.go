@@ -35,8 +35,6 @@ func main() {
 	dispatcher.AddHandler(handlers.NewCommand("source", source))
 	dispatcher.AddHandler(handlers.NewCommand("ignore", ignoreChannel))
 	dispatcher.AddHandler(handlers.NewCommand("unignore", unignoreChannel))
-	//dispatcher.AddHandler(handlers.NewCommand("setlog", setLogChannel))
-	//dispatcher.AddHandler(handlers.NewCommand("unsetlog", unsetLogChannel))
 	dispatcher.AddHandler(handlers.NewCommand("ignorelist", ignoreList))
 	dispatcher.AddHandler(handlers.NewCommand("start", start))
 	dispatcher.AddHandlerToGroup(
@@ -176,15 +174,12 @@ func help(bot *gotgbot.Bot, ctx *ext.Context) error {
 		"\n1. To ignore a channel use /ignore by replying a message from that channel or you can pass a channel id. for more help type /ignore.",
 		"\n2. To unignore a channel use /unignore by replying a message from that channel or you can pass a channel id. for more help type /unignore.",
 		"\n3. To get the list of all ignored channel use /ignorelist.",
-		//"\n4. If you want to set a channel as log chat, send /setlog in channel and forward to your group. You must add me in that channel as admin with send message permission to work.",
 
 		"\n\n<b>Available Commands:</b>",
 		"\n/start - ✨ display start message.",
 		"\n/ignore - ✅ unban and allow that user to sending message as channel (admin only).",
 		"\n/ignorelist - 📋 get list ignored channel.",
 		"\n/unignore - ⛔️ ban an unallow that user to sending message as channel (admin only).",
-		//"\n/setlog - 🗞️ setting log chat (admin only).",
-		//"\n/unsetlog - 🗑️ remove the log chat (admin only).",
 		"\n/source - 📚 get source code.",
 	)
 
@@ -347,46 +342,6 @@ func ignoreList(bot *gotgbot.Bot, ctx *ext.Context) error {
 	return ext.EndGroups
 }
 
-func setLogChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
-
-	msg := ctx.EffectiveMessage
-	chat := ctx.EffectiveChat
-
-	if chat.Type != "supergroup" {
-		msg.Reply(bot, "This command can only be used in Groups.", nil)
-		return nil
-	}
-
-	channelId, err := extractChannelId(msg)
-
-	if err != nil {
-		msg.Reply(bot, "Failed to extract channel id: "+err.Error(), nil)
-		return err
-	}
-
-	setLogChannelID(chat.Id, channelId)
-
-	msg.Reply(bot, fmt.Sprintf("Log Channel has been set to: %d", channelId), nil)
-
-	return ext.EndGroups
-}
-
-func unsetLogChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
-
-	msg := ctx.EffectiveMessage
-	chat := ctx.EffectiveChat
-
-	if chat.Type != "supergroup" {
-		msg.Reply(bot, "This command can only be used in Groups.", nil)
-		return nil
-	}
-
-	setLogChannelID(chat.Id, 0)
-	msg.Reply(bot, "Log Channel has been unset.", nil)
-
-	return ext.EndGroups
-}
-
 func restrictChannels(bot *gotgbot.Bot, ctx *ext.Context) error {
 	msg := ctx.EffectiveMessage
 	chat := ctx.EffectiveChat
@@ -413,11 +368,6 @@ func restrictChannels(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	logChannelId := getLogSettings(chat.Id).LogChannelID
-
-	if logChannelId != 0 {
-		bot.SendMessage(logChannelId, fmt.Sprintf("[RestrictChannels] Banning %s (%d)\n", sender.Name(), senderId), nil)
-	}
 	log.Printf("[RestrictChannels] Banning %s (%d) in %s (%d)\n", sender.Name(), sender.Id(), chat.Title, chat.Id)
 
 	return ext.ContinueGroups
