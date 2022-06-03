@@ -14,6 +14,8 @@ var (
 	botToken      string
 	apiUrl        string
 	webhookUrl    string
+	databaseUrl   string
+	databaseName  string
 )
 
 func init() {
@@ -41,6 +43,9 @@ func init() {
 		}(os.Getenv("PORT")),
 		"Port for the webhook",
 	)
+
+	flag.StringVar(&databaseUrl, "DB_URI", os.Getenv("DB_URI"), "Database URI for MongoDB")
+	flag.StringVar(&databaseName, "DB_NAME", os.Getenv("DB_NAME"), "Bot database name in MongoDB")
 
 	if apiUrl == "" {
 		apiUrl = "https://api.telegram.org"

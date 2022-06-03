@@ -19,6 +19,16 @@
       "description": "Bot Token, Get It From @BotFather.",
       "value": "",
       "required": true
+    },
+    "DB_URI": {
+      "description": "MongoDB Connection String.",
+      "value": "",
+      "required": true
+    },
+    "DB_NAME": {
+      "description": "MongoDB Database Name.",
+      "value": "",
+      "required": true
     }
   },
   "buildpacks": [
