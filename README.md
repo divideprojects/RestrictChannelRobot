@@ -12,7 +12,7 @@
 
 <p align='center'>
   <a href="https://go.dev/" alt="made-with-go"> <img src="https://img.shields.io/badge/Made%20with-Go-1f425f.svg?style=flat-square&logo=go&color=blue" /> </a>
-  <a href="https://github.com/DivideProjects/restrictchannelrobot" alt="Docker!"> <img src="https://img.shields.io/docker/pulls/divideprojects/restrictchannelrobot.svg" /> </a>
+  <a href="https://github.com/DivideProjects/restrictchannelrobot" alt="Docker!"> <img src="https://img.shields.io/docker/pulls/divideprojects/restrictchannelrobot" /> </a>
   <a href="https://hub.docker.com/r/divideprojects/restrictchannelrobot" alt="Docker Image Version"> <img src="https://img.shields.io/docker/v/divideprojects/restrictchannelrobot/latest" /> </a>
   <a href="https://deepsource.io/gh/DivideProjects/restrictchannelrobot/?ref=repository-badge"><img src="https://static.deepsource.io/deepsource-badge-light-mini.svg" alt="DeepSource"></a>
 </p>
