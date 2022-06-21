@@ -633,7 +633,7 @@ func (d *Decoder) decompress1X8BitExactly(dst, src []byte) ([]byte, error) {
 
 	const shift = 56
 
-	//log.Printf("mask: %b, tl:%d\n", mask, d.actualTableLog)
+	//fmt.Printf("mask: %b, tl:%d\n", mask, d.actualTableLog)
 	for br.off >= 4 {
 		br.fillFast()
 		v := dt[uint8(br.value>>shift)]
