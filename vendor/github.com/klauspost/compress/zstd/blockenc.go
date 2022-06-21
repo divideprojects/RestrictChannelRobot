@@ -7,7 +7,6 @@ package zstd
 import (
 	"errors"
 	"fmt"
-	"log"
 	"math"
 	"math/bits"
 
@@ -681,9 +680,9 @@ func (b *blockEnc) encode(org []byte, raw, rawAllLits bool) error {
 	}
 	if false {
 		println("block:", b.output[start:], "tablelog", ofEnc.actualTableLog, "maxcount:", ofEnc.maxCount)
-		log.Printf("selected TableLog: %d, Symbol length: %d\n", ofEnc.actualTableLog, ofEnc.symbolLen)
+		fmt.Printf("selected TableLog: %d, Symbol length: %d\n", ofEnc.actualTableLog, ofEnc.symbolLen)
 		for i, v := range ofEnc.norm[:ofEnc.symbolLen] {
-			log.Printf("%3d: %5d -> %4d \n", i, ofEnc.count[i], v)
+			fmt.Printf("%3d: %5d -> %4d \n", i, ofEnc.count[i], v)
 		}
 	}
 	b.output, err = mlEnc.writeCount(b.output)

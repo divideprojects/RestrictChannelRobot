@@ -7,7 +7,6 @@ package zstd
 import (
 	"errors"
 	"fmt"
-	"log"
 	"math"
 )
 
@@ -484,9 +483,9 @@ func (s *fseEncoder) validateNorm() (err error) {
 		if err == nil {
 			return
 		}
-		log.Printf("selected TableLog: %d, Symbol length: %d\n", s.actualTableLog, s.symbolLen)
+		fmt.Printf("selected TableLog: %d, Symbol length: %d\n", s.actualTableLog, s.symbolLen)
 		for i, v := range s.norm[:s.symbolLen] {
-			log.Printf("%3d: %5d -> %4d \n", i, s.count[i], v)
+			fmt.Printf("%3d: %5d -> %4d \n", i, s.count[i], v)
 		}
 	}()
 	if total != (1 << s.actualTableLog) {

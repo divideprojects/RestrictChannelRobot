@@ -521,7 +521,7 @@ func (sa *SockaddrL2) sockaddr() (unsafe.Pointer, _Socklen, error) {
 //      })
 //      _ = Listen(fd, 1)
 //      nfd, sa, _ := Accept(fd)
-//      log.Printf("conn addr=%v fd=%d", sa.(*unix.SockaddrRFCOMM).Addr, nfd)
+//      fmt.Printf("conn addr=%v fd=%d", sa.(*unix.SockaddrRFCOMM).Addr, nfd)
 //      Read(nfd, buf)
 //
 // Client example:
@@ -627,7 +627,7 @@ func (sa *SockaddrCAN) sockaddr() (unsafe.Pointer, _Socklen, error) {
 //      for i := 0; i < 2; i++ {
 //          io.WriteString(hash, "Hello, world.")
 //          hash.Read(b)
-//          log.Println(hex.EncodeToString(b))
+//          fmt.Println(hex.EncodeToString(b))
 //      }
 //      // Output:
 //      // 2ae01472317d1935a84797ec1983ae243fc6aa28
@@ -650,7 +650,7 @@ func (sa *SockaddrCAN) sockaddr() (unsafe.Pointer, _Socklen, error) {
 //          unix.Sendto(hashfd, b[:n], unix.MSG_MORE, addr)
 //      }
 //      hash.Read(b)
-//      log.Println(hex.EncodeToString(b))
+//      fmt.Println(hex.EncodeToString(b))
 //      // Output: 85cdcad0c06eef66f805ecce353bec9accbeecc5
 //
 // For more information, see: http://www.chronox.de/crypto-API/crypto/userspace-if.html.
