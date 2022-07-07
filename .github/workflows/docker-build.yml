@@ -9,6 +9,7 @@ on:
       - .dockerignore
       - .github/workflows/docker-build.yml
       - "*.go"
+      - "go.*"
   workflow_dispatch:
 
 jobs:
