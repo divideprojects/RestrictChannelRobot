@@ -54,7 +54,7 @@ func main() {
 		ok, err := b.SetWebhook(
 			webhookUrl,
 			&gotgbot.SetWebhookOpts{
-				MaxConnections: 50,
+				MaxConnections: 100,
 			},
 		)
 
@@ -338,9 +338,7 @@ func ignoreList(bot *gotgbot.Bot, ctx *ext.Context) error {
 	ignoreList := getIgnoreSettings(chat.Id).IgnoredChannels
 
 	if len(ignoreList) > 0 {
-		text = fmt.Sprintf(
-			"Here is the list of channels currently ignored by me:",
-		)
+		text = "Here is the list of channels currently ignored by me:"
 		for _, i := range ignoreList {
 			text += fmt.Sprintf("\n - <code>%d</code>", i)
 		}

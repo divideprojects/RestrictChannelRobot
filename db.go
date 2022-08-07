@@ -16,8 +16,6 @@ type IgnoreList struct {
 }
 
 var (
-	mongoClient *mongo.Client
-
 	// Contexts
 	tdCtx = context.TODO()
 	bgCtx = context.Background()

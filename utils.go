@@ -51,7 +51,7 @@ func isUserAdmin(bot *gotgbot.Bot, chatID, userId int64) bool {
 
 	var adminlist = make([]int64, 0)
 
-	adminsL, err := chat.GetAdministrators(bot, nil)
+	adminsL, _ := chat.GetAdministrators(bot, nil)
 
 	for _, admin := range adminsL {
 		adminlist = append(adminlist, admin.GetUser().Id)
