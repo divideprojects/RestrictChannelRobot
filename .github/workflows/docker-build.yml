@@ -4,12 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - Dockerfile
-      - .dockerignore
-      - .github/workflows/docker-build.yml
-      - "*.go"
-      - "go.*"
   workflow_dispatch:
 
 jobs:
