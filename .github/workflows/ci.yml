@@ -26,3 +26,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  automerge-dependabot-pr:
+    if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
+    needs: ci
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3.3.0
+        with:
+          target: minor
