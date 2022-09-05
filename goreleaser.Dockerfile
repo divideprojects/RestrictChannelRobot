@@ -1,3 +1,3 @@
 FROM gcr.io/distroless/static
-COPY restrictchannelrobot
+COPY restrictchannelrobot /
 CMD ["/restrictchannelrobot"]
