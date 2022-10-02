@@ -36,7 +36,6 @@ func main() {
 	dispatcher.AddHandler(handlers.NewCommand("ignore", ignoreChannel))
 	dispatcher.AddHandler(handlers.NewCommand("unignore", unignoreChannel))
 	dispatcher.AddHandler(handlers.NewCommand("ignorelist", ignoreList))
-	dispatcher.AddHandler(handlers.NewCommand("start", start))
 	dispatcher.AddHandlerToGroup(
 		handlers.NewMessage(
 			func(msg *gotgbot.Message) bool {
@@ -151,7 +150,7 @@ func start(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	return nil
+	return ext.EndGroups
 }
 
 func help(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -162,7 +161,7 @@ func help(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// stay silent in group chats
 	if chat.Type != "private" {
-		return nil
+		return ext.EndGroups
 	}
 
 	text = fmt.Sprint(
@@ -196,7 +195,7 @@ func help(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	return nil
+	return ext.EndGroups
 }
 
 func source(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -207,7 +206,7 @@ func source(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	// stay silent in group chats
 	if chat.Type != "private" {
-		return nil
+		return ext.EndGroups
 	}
 
 	text = fmt.Sprintf(
@@ -238,7 +237,7 @@ func source(bot *gotgbot.Bot, ctx *ext.Context) error {
 		return err
 	}
 
-	return nil
+	return ext.EndGroups
 }
 
 func ignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
@@ -248,36 +247,36 @@ func ignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 	user := ctx.EffectiveSender
 
 	if !isUserAdmin(bot, chat.Id, user.Id()) {
-		msg.Reply(bot, "This command can only be used by admins!", nil)
+		_, _ = msg.Reply(bot, "This command can only be used by admins!", nil)
 		return ext.EndGroups
 	}
 
 	if chat.Type != "supergroup" {
-		msg.Reply(bot, "This command can only be used in Groups.", nil)
+		_, _ = msg.Reply(bot, "This command can only be used in Groups.", nil)
 		return ext.EndGroups
 	}
 
 	channelId, err := extractChannelId(msg)
 
 	if channelId == -1 {
-		msg.Reply(bot, "Please reply to a message from a channel or pass the channel id to add a user to ignore list.", nil)
+		_, _ = msg.Reply(bot, "Please reply to a message from a channel or pass the channel id to add a user to ignore list.", nil)
 		return ext.EndGroups
 	}
 
 	if err != nil {
-		msg.Reply(bot, "Failed to extract channel id: "+err.Error(), nil)
+		_, _ = msg.Reply(bot, "Failed to extract channel id: "+err.Error(), nil)
 		return err
 	}
 
 	ignoreSettings := getIgnoreSettings(chat.Id)
 	for _, i := range ignoreSettings.IgnoredChannels {
 		if channelId == i {
-			msg.Reply(bot, "This channel is already in ignore list.", nil)
+			_, _ = msg.Reply(bot, "This channel is already in ignore list.", nil)
 		}
 	}
 
 	ignoreChat(chat.Id, channelId)
-	msg.Reply(bot, "Added this channel to ignore list.", nil)
+	_, _ = msg.Reply(bot, "Added this channel to ignore list.", nil)
 
 	return ext.EndGroups
 }
@@ -289,23 +288,23 @@ func unignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 	user := ctx.EffectiveSender
 
 	if !isUserAdmin(bot, chat.Id, user.Id()) {
-		msg.Reply(bot, "This command can only be used by admins!", nil)
+		_, _ = msg.Reply(bot, "This command can only be used by admins!", nil)
 		return ext.EndGroups
 	}
 	if chat.Type != "supergroup" {
-		msg.Reply(bot, "This command can only be used in Groups.", nil)
+		_, _ = msg.Reply(bot, "This command can only be used in Groups.", nil)
 		return ext.EndGroups
 	}
 
 	channelId, err := extractChannelId(msg)
 
 	if channelId == -1 {
-		msg.Reply(bot, "Please reply to a message from a channel or pass the channel id to add a user to ignore list.", nil)
+		_, _ = msg.Reply(bot, "Please reply to a message from a channel or pass the channel id to add a user to ignore list.", nil)
 		return ext.EndGroups
 	}
 
 	if err != nil {
-		msg.Reply(bot, "Failed to extract channel id: "+err.Error(), nil)
+		_, _ = msg.Reply(bot, "Failed to extract channel id: "+err.Error(), nil)
 		return err
 	}
 
@@ -318,7 +317,7 @@ func unignoreChannel(bot *gotgbot.Bot, ctx *ext.Context) error {
 		}
 	}
 
-	msg.Reply(bot, "This channel is not in ignore list.", nil)
+	_, _ = msg.Reply(bot, "This channel is not in ignore list.", nil)
 
 	return ext.EndGroups
 }
@@ -329,8 +328,8 @@ func ignoreList(bot *gotgbot.Bot, ctx *ext.Context) error {
 	chat := ctx.EffectiveChat
 
 	if chat.Type != "supergroup" {
-		msg.Reply(bot, "This command can only be used in Groups.", nil)
-		return nil
+		_, _ = msg.Reply(bot, "This command can only be used in Groups.", nil)
+		return ext.EndGroups
 	}
 
 	var text string
@@ -346,7 +345,7 @@ func ignoreList(bot *gotgbot.Bot, ctx *ext.Context) error {
 		text = "There are no channels in ignore list."
 	}
 
-	msg.Reply(bot, text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
+	_, _ = msg.Reply(bot, text, &gotgbot.SendMessageOpts{ParseMode: "HTML"})
 
 	return ext.EndGroups
 }
