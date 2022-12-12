@@ -1,5 +1,5 @@
 # Build Stage: Build bot using the alpine image, also install doppler in it
-FROM golang:1.19.3-alpine AS builder
+FROM golang:1.19.4-alpine AS builder
 RUN apk add --update --no-cache git
 WORKDIR /app
 COPY . .
