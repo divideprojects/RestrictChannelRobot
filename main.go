@@ -111,7 +111,7 @@ func start(bot *gotgbot.Bot, ctx *ext.Context) error {
 			"Also you can send /source to get my source code to know how i'm built ;) and make sure to give a star to it; that makes my Devs to work more on O.S. projects like me :)\n\n"+
 			"Hope you liked it !\n"+
 			"Brought to You with ❤️ By @DivideProjects\n"+
-			"Head towards @DivideProjectsDiscussion for any queries!",
+			"Head towards @DivideSupport for any queries!",
 		user.FirstName, bot.FirstName,
 	)
 	kb = gotgbot.InlineKeyboardMarkup{
@@ -120,7 +120,7 @@ func start(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 				{
 					Text: "Support",
-					Url:  "https://t.me/DivideProjectsDiscussion",
+					Url:  "https://t.me/DivideSupport",
 				},
 				{
 					Text: "Channel",
