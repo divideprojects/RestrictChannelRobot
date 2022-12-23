@@ -6,6 +6,6 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=`go env GOHOSTOS` GOARCH=`go env GOHOSTARCH` go build -o out/RestrictChannelRobot -ldflags="-w -s" .
 
 # Run Stage: Run bot using the bot and doppler binary copied from build stage
-FROM gcr.io/distroless/static
+FROM alpine:3.17.0
 COPY --from=builder /app/out/RestrictChannelRobot /
 CMD ["/RestrictChannelRobot"]
