@@ -4,7 +4,7 @@ module github.com/DivideProjects/GoLangTgBot
 go 1.18
 
 require (
-	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.12
+	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.13
 	github.com/sirupsen/logrus v1.9.0
 	go.mongodb.org/mongo-driver v1.11.1
 )
