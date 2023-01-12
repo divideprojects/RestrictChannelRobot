@@ -49,30 +49,27 @@ func main() {
 	if enableWebhook {
 		log.Println("[Webhook] Starting webhook...")
 
-		// Set Webhook
-		ok, err := b.SetWebhook(
-			webhookUrl,
-			&gotgbot.SetWebhookOpts{
-				MaxConnections: 100,
-			},
-		)
-
-		if !ok && err != nil {
-			log.Fatalf("[Webhook] Failed to set webhook: %s", err.Error())
-		}
-
-		log.Printf("[Webhook] Set Webhook to: %s\n", webhookUrl)
-
 		// Start the webhook
 		err = updater.StartWebhook(b,
+			botToken,
 			ext.WebhookOpts{
-				Listen:  "0.0.0.0",
-				Port:    webhookPort,
-				URLPath: botToken,
+				ListenAddr: "0.0.0.0:" + fmt.Sprint(webhookPort),
 			},
 		)
 		if err != nil {
 			log.Fatalf("[Webhook] Failed to start webhook: %s", err.Error())
+		}
+
+		// Set webhooks for all bots
+		err = updater.SetAllBotWebhooks(webhookUrl, &gotgbot.SetWebhookOpts{
+			MaxConnections:     100,
+			DropPendingUpdates: true,
+		})
+
+		if err != nil {
+			log.Fatalf("failed to set webhook: %s\n", err.Error())
+		} else {
+			log.Printf("[Webhook] Set Webhook to: %s\n", webhookUrl)
 		}
 
 		log.Println("[Webhook] Webhook started Successfully!")
