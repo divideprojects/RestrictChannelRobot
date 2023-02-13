@@ -1,5 +1,5 @@
-github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.14 h1:1D8iv6zctEkhD1+MtuJ1R4TX71AsgHc56uo1xdv9vlw=
-github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.14/go.mod h1:r815fYWTudnU9JhtsJAxUtuV7QrSgKpChJkfTSMFpfg=
+github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.15 h1:iXeqrGN8Q/qNl+aUWjaAbFrwNJ4MpSxicQ4x4XWTCKI=
+github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.15/go.mod h1:r815fYWTudnU9JhtsJAxUtuV7QrSgKpChJkfTSMFpfg=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
