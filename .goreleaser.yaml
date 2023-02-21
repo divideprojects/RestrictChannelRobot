@@ -5,8 +5,8 @@ release:
     Welcome to this new release!
   footer: |
     Docker Images:
-    `docker.io/divideprojects/{{ .ProjectName }}:latest`
-    `ghcr.io/divideprojects/{{ .ProjectName }}:latest`
+    `docker.io/divkix/{{ .ProjectName }}:latest`
+    `ghcr.io/divkix/{{ .ProjectName }}:latest`
 before:
   hooks:
     - go mod tidy
@@ -37,8 +37,8 @@ dockers:
     dockerfile: goreleaser.Dockerfile
     use: buildx
     image_templates:
-      - "docker.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-amd64"
-      - "ghcr.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-amd64"
+      - "docker.io/divkix/{{ .ProjectName }}:{{ .Tag }}-amd64"
+      - "ghcr.io/divkix/{{ .ProjectName }}:{{ .Tag }}-amd64"
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--pull"
@@ -51,8 +51,8 @@ dockers:
     dockerfile: goreleaser.Dockerfile
     use: buildx
     image_templates:
-      - "docker.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
-      - "ghcr.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
+      - "docker.io/divkix/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
+      - "ghcr.io/divkix/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
     build_flag_templates:
       - "--platform=linux/arm64/v8"
       - "--pull"
@@ -63,21 +63,21 @@ dockers:
 
 docker_manifests:
   # docker hub
-  - name_template: "docker.io/divideprojects/{{ .ProjectName }}:{{ .Version }}"
+  - name_template: "docker.io/divkix/{{ .ProjectName }}:{{ .Version }}"
     image_templates:
-    - "docker.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-amd64"
-    - "docker.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
-  - name_template: "docker.io/divideprojects/{{ .ProjectName }}:latest"
+    - "docker.io/divkix/{{ .ProjectName }}:{{ .Tag }}-amd64"
+    - "docker.io/divkix/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
+  - name_template: "docker.io/divkix/{{ .ProjectName }}:latest"
     image_templates:
-    - "docker.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-amd64"
-    - "docker.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
+    - "docker.io/divkix/{{ .ProjectName }}:{{ .Tag }}-amd64"
+    - "docker.io/divkix/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
 
   # github container registry
-  - name_template: "ghcr.io/divideprojects/{{ .ProjectName }}:{{ .Version }}"
+  - name_template: "ghcr.io/divkix/{{ .ProjectName }}:{{ .Version }}"
     image_templates:
-    - "ghcr.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-amd64"
-    - "ghcr.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
-  - name_template: "ghcr.io/divideprojects/{{ .ProjectName }}:latest"
+    - "ghcr.io/divkix/{{ .ProjectName }}:{{ .Tag }}-amd64"
+    - "ghcr.io/divkix/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
+  - name_template: "ghcr.io/divkix/{{ .ProjectName }}:latest"
     image_templates:
-    - "ghcr.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-amd64"
-    - "ghcr.io/divideprojects/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
+    - "ghcr.io/divkix/{{ .ProjectName }}:{{ .Tag }}-amd64"
+    - "ghcr.io/divkix/{{ .ProjectName }}:{{ .Tag }}-arm64v8"
