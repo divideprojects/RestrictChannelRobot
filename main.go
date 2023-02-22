@@ -127,7 +127,7 @@ func start(bot *gotgbot.Bot, ctx *ext.Context) error {
 			{
 				{
 					Text: "Source",
-					Url:  "https://github.com/DivideProjects/RestrictChannelRobot",
+					Url:  "https://github.com/divkix/RestrictChannelRobot",
 				},
 			},
 		},
@@ -208,7 +208,7 @@ func source(bot *gotgbot.Bot, ctx *ext.Context) error {
 
 	text = fmt.Sprintf(
 		"You can find my source code by <a href=\"%s\">here</a> or by clicking the button below.",
-		"https://github.com/DivideProjects/RestrictChannelRobot",
+		"https://github.com/divkix/RestrictChannelRobot",
 	)
 
 	_, err := msg.Reply(
@@ -222,7 +222,7 @@ func source(bot *gotgbot.Bot, ctx *ext.Context) error {
 					{
 						{
 							Text: "Source Code",
-							Url:  "https://github.com/DivideProjects/RestrictChannelRobot",
+							Url:  "https://github.com/divkix/RestrictChannelRobot",
 						},
 					},
 				},

@@ -15,5 +15,5 @@ name = "go"
 enabled = true
 
   [analyzers.meta]
-  import_root = "github.com/DivideProjects/RestrictChannelRobot"
+  import_root = "github.com/divkix/RestrictChannelRobot"
   dependencies_vendored = true

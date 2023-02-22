@@ -7,12 +7,12 @@
   <img src="https://img.shields.io/github/license/DivideProjects/restrictchannelrobot?style=flat-square" alt="LICENSE">
   <img src="https://img.shields.io/github/contributors/DivideProjects/restrictchannelrobot?style=flat-square" alt="Contributors">
   <img src="https://img.shields.io/github/repo-size/DivideProjects/restrictchannelrobot?style=flat-square" alt="Repo Size">
-  <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/DivideProjects/restrictchannelrobot&amp;title=Profile%20Views" alt="Views">
+  <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/divkix/restrictchannelrobot&amp;title=Profile%20Views" alt="Views">
 </p>
 
 <p align='center'>
   <a href="https://go.dev/" alt="made-with-go"> <img src="https://img.shields.io/badge/Made%20with-Go-1f425f.svg?style=flat-square&logo=go&color=blue" /> </a>
-  <a href="https://github.com/DivideProjects/restrictchannelrobot" alt="Docker!"> <img src="https://img.shields.io/docker/pulls/divideprojects/restrictchannelrobot" /> </a>
+  <a href="https://github.com/divkix/restrictchannelrobot" alt="Docker!"> <img src="https://img.shields.io/docker/pulls/divideprojects/restrictchannelrobot" /> </a>
   <a href="https://hub.docker.com/r/divideprojects/restrictchannelrobot" alt="Docker Image Version"> <img src="https://img.shields.io/docker/v/divideprojects/restrictchannelrobot/latest" /> </a>
   <a href="https://deepsource.io/gh/DivideProjects/restrictchannelrobot/?ref=repository-badge"><img src="https://static.deepsource.io/deepsource-badge-light-mini.svg" alt="DeepSource"></a>
 </p>
@@ -35,7 +35,7 @@ Can be found on telegram as [@RestrictChannelRobot](https://telegram.dog/Restric
 
 ## Deploy via Heroku.
 <p>
-  <a href="https://heroku.com/deploy?template=https://github.com/DivideProjects/restrictchannelrobot"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy"></a>
+  <a href="https://heroku.com/deploy?template=https://github.com/divkix/restrictchannelrobot"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy"></a>
 </p>
 
 ## Support   
