@@ -11,22 +11,29 @@ import (
 )
 
 func main() {
-	b, err := gotgbot.NewBot(
-		botToken,
-		&gotgbot.BotOpts{
-			DefaultRequestOpts: &gotgbot.RequestOpts{
-				Timeout: gotgbot.DefaultTimeout,
-				APIURL:  apiUrl,
-			},
-			Client: http.Client{},
+	// Create bot from environment value.
+	b, err := gotgbot.NewBot(botToken, &gotgbot.BotOpts{
+		Client: http.Client{},
+		DefaultRequestOpts: &gotgbot.RequestOpts{
+			Timeout: gotgbot.DefaultTimeout,
+			APIURL:  gotgbot.DefaultAPIURL,
 		},
-	)
+	})
 	if err != nil {
 		panic("failed to create new bot: " + err.Error())
 	}
 
 	// Create updater and dispatcher.
-	updater := ext.NewUpdater(nil)
+	updater := ext.NewUpdater(&ext.UpdaterOpts{
+		Dispatcher: ext.NewDispatcher(&ext.DispatcherOpts{
+			// If an error is returned by a handler, log it and continue going.
+			Error: func(b *gotgbot.Bot, ctx *ext.Context, err error) ext.DispatcherAction {
+				log.Println("an error occurred while handling update:", err.Error())
+				return ext.DispatcherActionNoop
+			},
+			MaxRoutines: 0,
+		}),
+	})
 	dispatcher := updater.Dispatcher
 
 	// Handlers for running commands.
@@ -48,28 +55,27 @@ func main() {
 
 	if enableWebhook {
 		log.Println("[Webhook] Starting webhook...")
-
-		// Start the webhook
-		err = updater.StartWebhook(b,
-			botToken,
-			ext.WebhookOpts{
-				ListenAddr: "0.0.0.0:" + fmt.Sprint(webhookPort),
-			},
-		)
-		if err != nil {
-			log.Fatalf("[Webhook] Failed to start webhook: %s", err.Error())
+		webhookOpts := ext.WebhookOpts{
+			ListenAddr:  "localhost:8080", // This example assumes you're in a dev environment running ngrok on 8080.
+			SecretToken: webhookSecret,    // Setting a webhook secret here allows you to ensure the webhook is set by you (must be set here AND in SetWebhook!).
 		}
 
-		// Set webhooks for all bots
-		err = updater.SetAllBotWebhooks(webhookUrl, &gotgbot.SetWebhookOpts{
+		// We use the token as the urlPath for the webhook, as using a secret ensures that strangers aren't crafting fake updates.
+		err = updater.StartWebhook(b, botToken, webhookOpts)
+		if err != nil {
+			panic("failed to start webhook: " + err.Error())
+		}
+
+		err = updater.SetAllBotWebhooks(webhookDomain, &gotgbot.SetWebhookOpts{
 			MaxConnections:     100,
 			DropPendingUpdates: true,
+			SecretToken:        webhookOpts.SecretToken,
 		})
 
 		if err != nil {
 			log.Fatalf("failed to set webhook: %s\n", err.Error())
 		} else {
-			log.Printf("[Webhook] Set Webhook to: %s\n", webhookUrl)
+			log.Printf("[Webhook] Set Webhook to: %s\n", webhookDomain)
 		}
 
 		log.Println("[Webhook] Webhook started Successfully!")
