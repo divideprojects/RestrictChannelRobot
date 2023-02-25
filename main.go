@@ -36,23 +36,6 @@ func main() {
 	})
 	dispatcher := updater.Dispatcher
 
-	// Handlers for running commands.
-	dispatcher.AddHandler(handlers.NewCommand("start", start))
-	dispatcher.AddHandler(handlers.NewCommand("help", help))
-	dispatcher.AddHandler(handlers.NewCommand("source", source))
-	dispatcher.AddHandler(handlers.NewCommand("ignore", ignoreChannel))
-	dispatcher.AddHandler(handlers.NewCommand("unignore", unignoreChannel))
-	dispatcher.AddHandler(handlers.NewCommand("ignorelist", ignoreList))
-	dispatcher.AddHandlerToGroup(
-		handlers.NewMessage(
-			func(msg *gotgbot.Message) bool {
-				return msg.GetSender().IsAnonymousChannel()
-			},
-			restrictChannels,
-		),
-		-1,
-	)
-
 	if enableWebhook {
 		log.Println("[Webhook] Starting webhook...")
 		webhookOpts := ext.WebhookOpts{
@@ -80,6 +63,10 @@ func main() {
 
 		log.Println("[Webhook] Webhook started Successfully!")
 	} else {
+		success, err := b.DeleteWebhook(&gotgbot.DeleteWebhookOpts{DropPendingUpdates: true})
+		if err != nil || !success {
+			log.Fatalf("[Polling] Failed to delete webhook: %s\n", err.Error())
+		}
 		err = updater.StartPolling(b, &ext.PollingOpts{DropPendingUpdates: false})
 		if err != nil {
 			log.Fatalf("[Polling] Failed to start polling: %s\n", err.Error())
@@ -89,6 +76,23 @@ func main() {
 
 	// log msg telling that bot has started
 	log.Printf("%s has been started...!\nMade with ❤️ by @DivideProjects\n", b.User.Username)
+
+	// Handlers for running commands.
+	dispatcher.AddHandler(handlers.NewCommand("start", start))
+	dispatcher.AddHandler(handlers.NewCommand("help", help))
+	dispatcher.AddHandler(handlers.NewCommand("source", source))
+	dispatcher.AddHandler(handlers.NewCommand("ignore", ignoreChannel))
+	dispatcher.AddHandler(handlers.NewCommand("unignore", unignoreChannel))
+	dispatcher.AddHandler(handlers.NewCommand("ignorelist", ignoreList))
+	dispatcher.AddHandlerToGroup(
+		handlers.NewMessage(
+			func(msg *gotgbot.Message) bool {
+				return msg.GetSender().IsAnonymousChannel()
+			},
+			restrictChannels,
+		),
+		-1,
+	)
 
 	// Idle, to keep updates coming in, and avoid bot stopping.
 	updater.Idle()
