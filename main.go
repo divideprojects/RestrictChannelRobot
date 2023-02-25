@@ -63,10 +63,10 @@ func main() {
 
 		log.Println("[Webhook] Webhook started Successfully!")
 	} else {
-		success, err := b.DeleteWebhook(&gotgbot.DeleteWebhookOpts{DropPendingUpdates: true})
-		if err != nil || !success {
-			log.Fatalf("[Polling] Failed to delete webhook: %s\n", err.Error())
+		if _, err = b.DeleteWebhook(nil); err != nil {
+			log.Fatalf("[Polling] Failed to remove webhook: %v", err)
 		}
+		log.Println("[Polling] Removed Webhook!")
 		err = updater.StartPolling(b, &ext.PollingOpts{DropPendingUpdates: false})
 		if err != nil {
 			log.Fatalf("[Polling] Failed to start polling: %s\n", err.Error())
