@@ -1,14 +1,15 @@
 # Build Stage: Build bot using the alpine image, also install doppler in it
 FROM golang:1.20.1-alpine AS builder
 RUN apk add --no-cache curl wget gnupg git
-RUN (curl -Ls --tlsv1.2 --proto "=https" --retry 3 https://cli.doppler.com/install.sh || wget -t 3 -qO- https://cli.doppler.com/install.sh) | sh
 WORKDIR /app
 COPY . .
 RUN CGO_ENABLED=0 GOOS=`go env GOHOSTOS` GOARCH=`go env GOHOSTARCH` go build -o out/RestrictChannelRobot -ldflags="-w -s" .
 
 # Run Stage: Run bot using the bot and doppler binary copied from build stage
-FROM gcr.io/distroless/static
+FROM alpine:3.17.2
+RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.key' -O /etc/apk/keys/cli@doppler-8004D9FF50437357.rsa.pub \
+    && echo 'https://packages.doppler.com/public/cli/alpine/any-version/main' | tee -a /etc/apk/repositories \
+    && apk add --no-cache doppler
 COPY --from=builder /app/out/RestrictChannelRobot /
-COPY --from=builder /usr/local/bin/doppler /
 ENTRYPOINT ["/doppler", "run", "--"]
 CMD ["/RestrictChannelRobot"]
