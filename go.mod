@@ -6,7 +6,7 @@ go 1.19
 require (
 	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.16
 	github.com/sirupsen/logrus v1.9.0
-	go.mongodb.org/mongo-driver v1.11.2
+	go.mongodb.org/mongo-driver v1.11.3
 )
 
 require (
