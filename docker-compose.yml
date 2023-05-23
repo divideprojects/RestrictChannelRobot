@@ -1,0 +1,5 @@
+version: '3'
+services:
+  restrict-channel-bot:
+    image: ghcr.io/divkix/restrictchannelrobot:latest
+    restart: always
