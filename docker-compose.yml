@@ -3,3 +3,12 @@ services:
   restrict-channel-bot:
     image: ghcr.io/divkix/restrictchannelrobot:latest
     restart: always
+    container_name: restrict-channel-bot
+    environment:
+      - BOT_TOKEN
+      - USE_WEBHOOKS
+      - WEBHOOK_SECRET
+      - WEBHOOK_DOMAIN
+      - PORT
+      - DB_URI
+      - DB_NAME
