@@ -4,7 +4,7 @@ RUN apk add --update --no-cache git upx
 WORKDIR /app
 COPY . .
 RUN CGO_ENABLED=0 GOOS=`go env GOHOSTOS` GOARCH=`go env GOHOSTARCH` go build -o out/RestrictChannelRobot -ldflags="-w -s" .
-RUN upx out/RestrictChannelRobot
+RUN upx --brute out/RestrictChannelRobot
 
 # Run Stage: Run bot using the bot and doppler binary copied from build stage
 FROM alpine:3.18.0
