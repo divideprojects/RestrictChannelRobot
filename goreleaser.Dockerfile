@@ -1,6 +1,7 @@
 FROM alpine:3.18.0
 COPY restrictchannelrobot /
 CMD ["/restrictchannelrobot"]
+
 LABEL org.opencontainers.image.authors="Divanshu Chauhan <divkix@divkix.me>"
 LABEL org.opencontainers.image.url="https://divkix.me"
 LABEL org.opencontainers.image.source="https://github.com/divkix/RestrictChannelRobot"
