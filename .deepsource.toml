@@ -4,16 +4,13 @@ version = 1
 name = "docker"
 enabled = true
 
-  [analyzers.meta]
-  dockerfile_paths = [
-    "Dockerfile",
-    "Dockerfile.caprover"
-  ]
+[analyzers.meta]
+dockerfile_paths = ["Dockerfile", "goreleaser.Dockerfile"]
 
 [[analyzers]]
 name = "go"
 enabled = true
 
-  [analyzers.meta]
-  import_root = "github.com/divkix/RestrictChannelRobot"
-  dependencies_vendored = true
+[analyzers.meta]
+import_root = "github.com/divideprojects/RestrictChannelRobot"
+dependencies_vendored = true

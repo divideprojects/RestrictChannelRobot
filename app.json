@@ -11,7 +11,7 @@
     "telegram anonymous channel",
     "telegram group"
   ],
-  "repository": "https://github.com/divkix/RestrictChannelRobot",
+  "repository": "https://github.com/divideprojects/RestrictChannelRobot",
   "website": "https://t.me/DivideProjects",
   "success_url": "https://t.me/DivideProjects",
   "env": {

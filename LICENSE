@@ -630,7 +630,7 @@ state the exclusion of warranty; and each file should have at least
 the "copyright" line and a pointer to where the full notice is found.
 
     RestrictChannelRobot - A Telegram bot, to ban anonymous channels in group.
-    Copyright (C) 2021  Divkix
+    Copyright (C) 2021-2023  Divkix
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published

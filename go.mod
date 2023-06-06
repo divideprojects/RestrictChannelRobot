@@ -1,4 +1,4 @@
-module github.com/divkix/RestrictChannelRobot
+module github.com/divideprojects/RestrictChannelRobot
 
 // +heroku goVersion go1.19
 go 1.19
