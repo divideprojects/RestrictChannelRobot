@@ -1,7 +1,7 @@
 version: '3'
 services:
   restrict-channel-bot:
-    image: ghcr.io/divideprojects/RestrictChannelRobot:latest
+    image: ghcr.io/divideprojects/restrictchannelrobot:latest
     restart: always
     container_name: restrict-channel-bot
     environment:
