@@ -7,7 +7,7 @@ RUN CGO_ENABLED=0 GOOS=`go env GOHOSTOS` GOARCH=`go env GOHOSTARCH` go build -o 
 RUN upx --brute out/RestrictChannelRobot
 
 # Run Stage: Run bot using the bot and doppler binary copied from build stage
-FROM alpine:3.18.4
+FROM alpine:3.18.5
 COPY --from=builder /app/out/RestrictChannelRobot /
 CMD ["/RestrictChannelRobot"]
 
