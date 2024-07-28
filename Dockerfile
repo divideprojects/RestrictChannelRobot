@@ -1,5 +1,5 @@
 # Build Stage: Build bot using the alpine image, also install doppler in it
-FROM golang:1.21-alpine AS builder
+FROM golang:1.22-alpine AS builder
 RUN apk add --update --no-cache git upx
 WORKDIR /app
 COPY . .
@@ -7,7 +7,7 @@ RUN CGO_ENABLED=0 GOOS=`go env GOHOSTOS` GOARCH=`go env GOHOSTARCH` go build -o 
 RUN upx --brute out/RestrictChannelRobot
 
 # Run Stage: Run bot using the bot and doppler binary copied from build stage
-FROM alpine:3.18.3
+FROM alpine:3.20.1
 COPY --from=builder /app/out/RestrictChannelRobot /
 CMD ["/RestrictChannelRobot"]
 
