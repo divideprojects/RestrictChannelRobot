@@ -1,4 +1,4 @@
-FROM alpine:3.18.3
+FROM alpine:3.20.0
 COPY restrictchannelrobot /
 CMD ["/restrictchannelrobot"]
 
